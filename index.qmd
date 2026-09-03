@@ -66,7 +66,7 @@ Landscape-level analysis of satellite data often requires that pixels be classif
 
 ```{r platform table, echo=FALSE}
 
-table <- read.csv("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Platforms.csv")
+table <- read.csv("D:/Sync/MGEM_Loon_Lake/Platforms.csv")
 
 DT::datatable(table,
               rownames = FALSE,
@@ -85,14 +85,14 @@ The first part of this exercise involves mapping out your own 'pixels' in the MK
 
 ```{r files, echo=FALSE, include=FALSE}
 
-Planet <- rast("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Planet_RGB.tif")
-Sentinel <- rast("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Sentinel_2_RGB.tif")
-Landsat <- rast("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Landsat_8_RGB.tif")
+Planet <- rast("D:/Sync/MGEM_Loon_Lake/Planet_RGB.tif")
+Sentinel <- rast("D:/Sync/MGEM_Loon_Lake/Sentinel_2_RGB.tif")
+Landsat <- rast("D:/Sync/MGEM_Loon_Lake/Landsat_8_RGB.tif")
 
-Plots <- vect("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/plots/MGEM_plots-2025.shp")
+Plots <- vect("D:/Sync/MGEM_Loon_Lake/plots/MGEM_plots.shp")
 Plots <- terra::project(Plots, "+init=EPSG:4326")
 
-MKRF <- vect("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Vector/mkrf_boundary.shp")
+MKRF <- vect("D:/Sync/MGEM_Loon_Lake/Vector/mkrf_boundary.shp")
 MKRF <- project(MKRF, crs(Planet))
 
 ##crop to MKRF
@@ -442,7 +442,7 @@ Once you are done filling out the table by the end of the lab, click the 'pdf' b
 ```{r table, echo=FALSE}
 
 
-table <- read.csv("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Loon_Lake_Table.csv")
+table <- read.csv("D:/Sync/MGEM_Loon_Lake/Loon_Lake_Table.csv")
 
 DT::datatable(table,
               rownames = FALSE,
@@ -483,7 +483,7 @@ Now that we have some understanding of the mixed pixel problem across various pi
 ```{r unsupervised classification, echo=FALSE}
 
 
-unsup_class <- rast("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/unsup_class.tiff")
+unsup_class <- rast("D:/Sync/MGEM_Loon_Lake/unsup_class.tiff")
 
 ```
 
@@ -539,7 +539,7 @@ e
 ```{r table2, echo=FALSE}
 
 
-table2 <- read.csv("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Classification_Table.csv")
+table2 <- read.csv("D:/Sync/MGEM_Loon_Lake/Classification_Table.csv")
 
 DT::datatable(table2,
               rownames = FALSE,
