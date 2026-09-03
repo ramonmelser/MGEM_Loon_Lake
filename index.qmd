@@ -444,22 +444,48 @@ Once you are done filling out the table by the end of the lab, click the 'pdf' b
 
 table <- read.csv("D:/Sync/MGEM_Loon_Lake/Loon_Lake_Table.csv")
 
-DT::datatable(table,
-              rownames = FALSE,
-              class = 'cell-border stripe',
-              colnames = c("Platform", "Site#", "Mixed or Homogenous",
-                           "Landscape Features", "Landcover Class",
-                           "Pixel Characteristics","Estimated NDVI", "Lat", "Lon"),
-              extensions = 'Buttons',
-              options = list(dom = 'Bfrtip',buttons = c('pdf'), pageLength = 23),
-              editable = TRUE) %>%
+DT::datatable(
+  table,
+  rownames = FALSE,
+  class = "cell-border stripe",
   
-  formatStyle('Plot..',
-              target = 'row',
-              backgroundColor = styleEqual(c(1,2,3,4,5,6),
-                                           c("gray", "white", "gray", "white",
-                                             "gray", "white")))
-
+  colnames = c(
+    "Platform",
+    "Site#",
+    "Lat/Lon",
+    "Mixed or Homogenous",
+    "Landscape Features",
+    "Landcover Class",
+    "Pixel Characteristics",
+    "Estimated NDVI"
+  ),
+  
+  extensions = "Buttons",
+  
+  options = list(
+    dom = "Bfrtip",
+    buttons = c("pdf"),
+    pageLength = 23
+  ),
+  
+  editable = TRUE
+) %>%
+  
+  formatStyle(
+    "Plot..",
+    target = "row",
+    backgroundColor = styleEqual(
+      c(1, 2, 3, 4, 5, 6),
+      c(
+        "gray",
+        "white",
+        "gray",
+        "white",
+        "gray",
+        "white"
+      )
+    )
+  )
 ```
 
 # Imagery Comparison
