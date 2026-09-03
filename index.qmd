@@ -137,58 +137,283 @@ planet_pal <- colorNumeric(c("#FF0000", "#FFFF00", "#006400"),
 
 ```{r leaflet, echo=FALSE, include=FALSE}
 
-b <- leaflet(Plots, width = 600, height = 600) %>%
-  
-  #set up the two map panes
-  addMapPane("right", zIndex = 0) %>%
-  addMapPane("left",  zIndex = 0) %>%
-  addTiles(group = "base", layerId = "baseid1", options = pathOptions(pane = "right")) %>%
-  addTiles(group = "base", layerId = "baseid2", options = pathOptions(pane = "left")) %>%
-  
-  ##add plot points and enable labels
-  addMarkers(group = "Plots", label = ~htmlEscape(Name))%>%
-  
-  ##add Landsat RGB and NDVI
-  addRasterRGB(x = Landsat, 3,2,1,
-               quantiles = c(0.02, 0.98), domain = NULL,
-               options = leafletOptions(pane = "left"), group = "Landsat") %>%
-  
-  addRasterImage(x = Landsat_NDVI, colors = landsat_pal,
-                 options = leafletOptions(pane = "right"), group = "Landsat") %>%
-  
-  ##add Sentinel RGB and NDVI
-  addRasterRGB(x = Sentinel, 3,2,1,,
-               quantiles = c(0.02, 0.98), domain = NULL,
-               options = leafletOptions(pane = "left"), group = "Sentinel") %>%
-  
-  addRasterImage(x = Sentinel_NDVI, colors = sentinel_pal,
-                 options = leafletOptions(pane = "right"), group = "Sentinel") %>%
-  
-  ##add Planet RGB and NDVI
-  #large files may require you to play with the maxBytes option
-    addRasterRGB(x = Planet, 3,2,1,,
-              quantiles = c(0.02, 0.98), domain = NULL,
-               options = leafletOptions(pane = "left"), group = "Planet",
-               maxBytes = 11269792) %>%
-  
-  addRasterImage(x = Planet_NDVI, colors = planet_pal,
-                 options = leafletOptions(pane = "right"), group = "Planet",
-                 maxBytes = 11269792) %>%
-  
-  ##Set layer controls and enable side by side panel split
-  addLayersControl(baseGroups = c("Landsat", "Sentinel", "Planet"),
-                   overlayGroups = c("Plots")) %>%
-  
-  addSidebyside(layerId = "sidecontrols",
-                rightId = "baseid1",
-                leftId  = "baseid2") %>%
-  
-  ##Add scale bar and enable GPS live location
-  addScaleBar(position = c("bottomleft")) %>%
-  addControlGPS(options = gpsOptions(position = "topleft", activate = TRUE,
-                                     autoCenter = TRUE, maxZoom = 10,
-                                     setView = TRUE))
+# =====================================================
+# NDVI PALETTES
+# =====================================================
 
+sentinel_pal <- colorNumeric(
+  c("#FF0000", "#FFFF00", "#006400"),
+  values(Sentinel_NDVI),
+  na.color = "transparent"
+)
+
+landsat_pal <- colorNumeric(
+  c("#FF0000", "#FFFF00", "#006400"),
+  values(Landsat_NDVI),
+  na.color = "transparent"
+)
+
+planet_pal <- colorNumeric(
+  c("#FF0000", "#FFFF00", "#006400"),
+  values(Planet_NDVI),
+  na.color = "transparent"
+)
+
+
+# Convert existing leaflet palettes to colour vectors
+sentinel_cols <- sentinel_pal(
+  seq(
+    min(values(Sentinel_NDVI), na.rm = TRUE),
+    max(values(Sentinel_NDVI), na.rm = TRUE),
+    length.out = 256
+  )
+)
+
+landsat_cols <- landsat_pal(
+  seq(
+    min(values(Landsat_NDVI), na.rm = TRUE),
+    max(values(Landsat_NDVI), na.rm = TRUE),
+    length.out = 256
+  )
+)
+
+planet_cols <- planet_pal(
+  seq(
+    min(values(Planet_NDVI), na.rm = TRUE),
+    max(values(Planet_NDVI), na.rm = TRUE),
+    length.out = 256
+  )
+)
+
+
+# =====================================================
+# BUILD MAP
+# =====================================================
+
+b <- leaflet(
+  Plots,
+  width = 600,
+  height = 600
+) %>%
+  
+  # ===================================================
+  # MAP PANES
+  # ===================================================
+  
+  addMapPane(
+    "right",
+    zIndex = 0
+  ) %>%
+  
+  addMapPane(
+    "left",
+    zIndex = 0
+  ) %>%
+  
+  
+  # ===================================================
+  # BASEMAPS FOR SIDE-BY-SIDE CONTROL
+  # ===================================================
+  
+  addTiles(
+    group = "base",
+    layerId = "baseid1",
+    options = pathOptions(
+      pane = "right"
+    )
+  ) %>%
+  
+  addTiles(
+    group = "base",
+    layerId = "baseid2",
+    options = pathOptions(
+      pane = "left"
+    )
+  ) %>%
+  
+  
+  # ===================================================
+  # PLOT LOCATIONS
+  # ===================================================
+  
+  addMarkers(
+    group = "Plots",
+    label = ~htmlEscape(Name)
+  ) %>%
+  
+  
+  # ===================================================
+  # LANDSAT
+  # ===================================================
+  
+  addRasterRGB(
+    x = Landsat,
+    3, 2, 1,
+    quantiles = c(0.02, 0.98),
+    domain = NULL,
+    options = leafletOptions(
+      pane = "left"
+    ),
+    group = "Landsat"
+  ) %>%
+  
+  leafem::addGeoRaster(
+    Landsat_NDVI,
+    group = "Landsat",
+    layerId = "landsat_ndvi",
+    opacity = 1,
+    
+    options = leaflet::tileOptions(
+      pane = "right"
+    ),
+    
+    colorOptions = leafem::colorOptions(
+      palette = landsat_cols,
+      domain = range(
+        values(Landsat_NDVI),
+        na.rm = TRUE
+      )
+    ),
+    
+    imagequery = TRUE,
+    
+    imagequeryOptions = leafem::imagequeryOptions(
+      type = "click",
+      digits = 3,
+      prefix = "Landsat NDVI:"
+    )
+  ) %>%
+  
+  
+  # ===================================================
+  # SENTINEL
+  # ===================================================
+  
+  addRasterRGB(
+    x = Sentinel,
+    3, 2, 1,
+    quantiles = c(0.02, 0.98),
+    domain = NULL,
+    options = leafletOptions(
+      pane = "left"
+    ),
+    group = "Sentinel"
+  ) %>%
+  
+  leafem::addGeoRaster(
+    Sentinel_NDVI,
+    group = "Sentinel",
+    layerId = "sentinel_ndvi",
+    opacity = 1,
+    
+    options = leaflet::tileOptions(
+      pane = "right"
+    ),
+    
+    colorOptions = leafem::colorOptions(
+      palette = sentinel_cols,
+      domain = range(
+        values(Sentinel_NDVI),
+        na.rm = TRUE
+      )
+    ),
+    
+    imagequery = TRUE,
+    
+    imagequeryOptions = leafem::imagequeryOptions(
+      type = "click",
+      digits = 3,
+      prefix = "Sentinel NDVI:"
+    )
+  ) %>%
+  
+  
+  # ===================================================
+  # PLANET
+  # ===================================================
+  
+  addRasterRGB(
+    x = Planet,
+    3, 2, 1,
+    quantiles = c(0.02, 0.98),
+    domain = NULL,
+    options = leafletOptions(
+      pane = "left"
+    ),
+    group = "Planet",
+    maxBytes = 11269792
+  ) %>%
+  
+  leafem::addGeoRaster(
+    Planet_NDVI,
+    group = "Planet",
+    layerId = "planet_ndvi",
+    opacity = 1,
+    
+    options = leaflet::tileOptions(
+      pane = "right"
+    ),
+    
+    colorOptions = leafem::colorOptions(
+      palette = planet_cols,
+      domain = range(
+        values(Planet_NDVI),
+        na.rm = TRUE
+      )
+    ),
+    
+    imagequery = TRUE,
+    
+    imagequeryOptions = leafem::imagequeryOptions(
+      type = "click",
+      digits = 3,
+      prefix = "Planet NDVI:"
+    )
+  ) %>%
+  
+  
+  # ===================================================
+  # LAYER CONTROL
+  # ===================================================
+  
+  addLayersControl(
+    baseGroups = c(
+      "Landsat",
+      "Sentinel",
+      "Planet"
+    ),
+    overlayGroups = "Plots"
+  ) %>%
+  
+  
+  # ===================================================
+  # SIDE-BY-SIDE SLIDER
+  # ===================================================
+  
+  addSidebyside(
+    layerId = "sidecontrols",
+    rightId = "baseid1",
+    leftId = "baseid2"
+  ) %>%
+  
+  
+  # ===================================================
+  # MAP CONTROLS
+  # ===================================================
+  
+  addScaleBar(
+    position = "bottomleft"
+  ) %>%
+  
+  addControlGPS(
+    options = gpsOptions(
+      position = "topleft",
+      activate = TRUE,
+      autoCenter = TRUE,
+      maxZoom = 10,
+      setView = TRUE
+    )
+  )
 
 ```
 
