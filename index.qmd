@@ -280,7 +280,7 @@ b <- leaflet(
     imagequeryOptions = leafem::imagequeryOptions(
       type = "click",
       digits = 3,
-      prefix = ""
+      prefix = ":"
     )
   ) %>%
   
@@ -323,7 +323,7 @@ b <- leaflet(
     imagequeryOptions = leafem::imagequeryOptions(
       type = "click",
       digits = 3,
-      prefix = ""
+      prefix = ":"
     )
   ) %>%
   
@@ -367,7 +367,7 @@ b <- leaflet(
     imagequeryOptions = leafem::imagequeryOptions(
       type = "click",
       digits = 3,
-      prefix = ""
+      prefix = ":"
     )
   ) %>%
   
