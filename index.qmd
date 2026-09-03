@@ -66,7 +66,7 @@ Landscape-level analysis of satellite data often requires that pixels be classif
 
 ```{r platform table, echo=FALSE}
 
-table <- read.csv("D:/Sync/MGEM_Loon_Lake/Platforms.csv")
+table <- read.csv("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Platforms.csv")
 
 DT::datatable(table,
               rownames = FALSE,
@@ -81,18 +81,18 @@ DT::datatable(table,
 
 # Pixel Mapping
 
-The first part of this exercise involves mapping out your own 'pixels' in the MKRF research forest, and observing the landscape features that each of these pixels contain. For this exercise, you need to form into 6 groups, which will be provided with a compass and transect tape. You will also need to assign 1 note-taker to mark down your observations in the field. To guide you in this exercise, we have laid out 6 points that will serve as your 'field sites' - these sites are marked on the interactive map below. Before heading out, take a few minutes to explore the map and its' layers. You will notice that you can 'slide' between true colour and NDVI visualizations: you will use this functionality later in the exercise, but don't need to focus on this when you're in the field.
+The first part of this exercise involves mapping out your own 'pixels' in the MKRF research forest, and observing the landscape features that each of these pixels contain. For this exercise, you need to form into 9 groups, which will be provided with a compass and transect tape. You will also need to assign 1 note-taker to mark down your observations in the field. To guide you in this exercise, we have laid out 9 points that will serve as your 'field sites' - these sites are marked on the interactive map below. Each group will be responsible for analyzing 6 sites (group 1: sites 1-6, group 2: sites 2-7, ... group 9: sites 9, 1, 2, 3, 4 & 5). Before heading out, take a few minutes to explore the map and its' layers. You will notice that you can 'slide' between true colour and NDVI visualizations: you will use this functionality later in the exercise, but don't need to focus on this when you're in the field.
 
 ```{r files, echo=FALSE, include=FALSE}
 
-Planet <- rast("D:/Sync/MGEM_Loon_Lake/Planet_RGB.tif")
-Sentinel <- rast("D:/Sync/MGEM_Loon_Lake/Sentinel_2_RGB.tif")
-Landsat <- rast("D:/Sync/MGEM_Loon_Lake/Landsat_8_RGB.tif")
+Planet <- rast("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Planet_RGB.tif")
+Sentinel <- rast("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Sentinel_2_RGB.tif")
+Landsat <- rast("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Landsat_8_RGB.tif")
 
-Plots <- vect("D:/Sync/MGEM_Loon_Lake/plots/MGEM_plots.shp")
+Plots <- vect("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/plots/MGEM_plots-2025.shp")
 Plots <- terra::project(Plots, "+init=EPSG:4326")
 
-MKRF <- vect("D:/Sync/MGEM_Loon_Lake/Vector/mkrf_boundary.shp")
+MKRF <- vect("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Vector/mkrf_boundary.shp")
 MKRF <- project(MKRF, crs(Planet))
 
 ##crop to MKRF
@@ -442,14 +442,14 @@ Once you are done filling out the table by the end of the lab, click the 'pdf' b
 ```{r table, echo=FALSE}
 
 
-table <- read.csv("D:/Sync/MGEM_Loon_Lake/Loon_Lake_Table.csv")
+table <- read.csv("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Loon_Lake_Table.csv")
 
 DT::datatable(table,
               rownames = FALSE,
               class = 'cell-border stripe',
               colnames = c("Platform", "Site#", "Mixed or Homogenous",
                            "Landscape Features", "Landcover Class",
-                           "Pixel Characteristics","Estimated NDVI"),
+                           "Pixel Characteristics","Estimated NDVI", "Lat", "Lon"),
               extensions = 'Buttons',
               options = list(dom = 'Bfrtip',buttons = c('pdf'), pageLength = 23),
               editable = TRUE) %>%
@@ -483,7 +483,7 @@ Now that we have some understanding of the mixed pixel problem across various pi
 ```{r unsupervised classification, echo=FALSE}
 
 
-unsup_class <- rast("D:/Sync/MGEM_Loon_Lake/unsup_class.tiff")
+unsup_class <- rast("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/unsup_class.tiff")
 
 ```
 
@@ -539,7 +539,7 @@ e
 ```{r table2, echo=FALSE}
 
 
-table2 <- read.csv("D:/Sync/MGEM_Loon_Lake/Classification_Table.csv")
+table2 <- read.csv("F:/mgem/loon-lake-2025/MGEM_Loon_Lake/Classification_Table.csv")
 
 DT::datatable(table2,
               rownames = FALSE,
@@ -550,7 +550,7 @@ DT::datatable(table2,
               editable = TRUE) %>%
   formatStyle('Class',
               target = 'row',
-              backgroundColor = styleEqual(c(1,2,3,4,5,6, 7), c("gray", "white", "gray", "white", "gray", "white", "gray")))
+              backgroundColor = styleEqual(c(1,2,3,4,5,6,7), c("gray", "white", "gray", "white", "gray", "white", "gray")))
 
 ```
 
